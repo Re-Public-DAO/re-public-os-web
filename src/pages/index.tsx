@@ -19,7 +19,7 @@ const Home = () => {
     if (isUnlocked && hasAttemptedLogin && user) {
       router.replace('/apps',)
     }
-  }, [ isUnlocked, hasAttemptedLogin, user, ],)
+  }, [ isUnlocked, hasAttemptedLogin, user, router, ],)
 
   return (
     <div

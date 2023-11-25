@@ -4,6 +4,10 @@ import { useEffect, useState, }                            from 'react'
 import dayJsOriginal                                       from 'dayjs'
 import relativeTime                                        from 'dayjs/plugin/relativeTime'
 import duration                                            from 'dayjs/plugin/duration'
+import { QueryClient, }                                    from '@tanstack/react-query'
+
+
+export const queryClient = new QueryClient()
 
 dayJsOriginal.extend(relativeTime,)
 dayJsOriginal.extend(duration,)
@@ -48,3 +52,5 @@ export const fetcherGetUrl = async <T>({ key, responseKey, },): Promise<T> => {
 
   return obj[responseKey]
 }
+
+export const convertBytesToGB = (bytes: number,) => (bytes / (1024 ** 3)).toFixed(2,)

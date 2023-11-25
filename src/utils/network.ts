@@ -14,8 +14,10 @@ export type ZeroTierNode = {
 
 export const useZeroTierNodes = () => {
 
+  console.log(process.env.NEXT_PUBLIC_API_URL,)
+
   const { data, error, mutate, } = useSWR({
-    key         : `${process.env.NEXT_PUBLIC_API_URL}/network/nodes`,
+    key         : `${process.env.NEXT_PUBLIC_API_URL}/network/nodes/`,
     responseKey : 'nodes',
   }, fetcherGetUrl<ZeroTierNode[]>,)
 

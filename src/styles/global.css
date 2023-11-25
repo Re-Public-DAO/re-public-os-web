@@ -12,7 +12,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  @apply font-manrope
+  @apply font-manrope bg-gradient-to-br from-cyan-50 to-fuchsia-50
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -20,12 +20,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .page-container h1 {
-  @apply text-2xl mb-5
+  @apply text-2xl mb-5 font-bold text-slate-400
 }
 
 p, span, label, a {
   /*font-weight: 500;*/
-  @apply font-manrope tracking-wide
+  @apply tracking-wide
 }
 
 button {
@@ -73,6 +73,10 @@ h3 {
   }
 }
 
+.brand-color {
+  color: #273A81;
+}
+
 .markdown a {
   @apply text-indigo-800 hover:underline
 }
@@ -107,3 +111,19 @@ h3 {
   font-size: .7em;
   margin-left: 2px;
 }
+
+.frosted-glass {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.frosted-glass-container:hover .frosted-glass {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.connector:hover .icon-container {
+  @apply opacity-100
+}
+

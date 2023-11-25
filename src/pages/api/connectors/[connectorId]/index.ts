@@ -1,5 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import ParseServer                         from '@/utils/parseServer'
+import { NextApiRequest, NextApiResponse, } from 'next'
 
 const handler = async (
   req: NextApiRequest,
@@ -7,16 +6,12 @@ const handler = async (
 ): Promise<void> => {
 
   if (req.method === 'GET') {
-    const { query } = req
+    const { query, } = req
 
-    console.log(query)
+    console.log(query,)
 
-    await ParseServer.User.logIn(process.env.RE_PUBLIC_API_USERNAME, process.env.RE_PUBLIC_API_KEY)
 
-    const queryConnectors = new ParseServer.Query('Connector')
-    queryConnectors.equalTo('connectorId', query.connectorId)
-    const connector = await queryConnectors.first()
-    res.status(200).json(connector)
+    res.status(200,).json({},)
   }
 
 }

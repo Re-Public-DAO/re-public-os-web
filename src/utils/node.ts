@@ -6,7 +6,7 @@ import { fetcherGetUrl, } from '@/utils'
 
 export const useNodeInfo = (nodeId: string,) => {
   const { data: nodeInfo, error, } = useSWR({
-    key         : `${process.env.NEXT_PUBLIC_API_URL}/network/nodes/${nodeId}`,
+    key         : `${process.env.NEXT_PUBLIC_API_URL}/network/nodes/${nodeId}/`,
     responseKey : 'node',
   }, fetcherGetUrl<ZeroTierNode[]>,)
 

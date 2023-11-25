@@ -1,11 +1,11 @@
-import { sessionOptions }            from '@/utils/session'
-import { NextRequest, NextResponse } from 'next/server'
-import { getIronSession }            from 'iron-session'
+import { sessionOptions, }            from '@/utils/session'
+import { NextRequest, NextResponse, } from 'next/server'
+import { getIronSession, }            from 'iron-session'
 
-export const middleware = async (req: NextRequest) => {
-  const res = NextResponse.next();
+export const middleware = async (req: NextRequest,) => {
+  const res = NextResponse.next()
 
-  console.log(req.cookies.get('auth_token'))
+  // console.log(req.cookies.get('auth_token'))
   // const session = await getIronSession(req, res, sessionOptions);
   //
   // // do anything with session here:
@@ -28,8 +28,8 @@ export const middleware = async (req: NextRequest) => {
   //   return new NextResponse(null, { status: 403 }); // unauthorized to see pages inside admin/
   // }
 
-  return res;
-};
+  return res
+}
 
 // export const config = {
 //   matcher: "*",

@@ -12,7 +12,7 @@ const QRCodeDisplay: FC<Props> = () => {
   useEffect(() => {
     const _fetchQRCode = async (): Promise<void> => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/devices/generate-qr-code`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/devices/generate-qr-code/`, {
           method  : 'GET',
           headers : {
             'Content-Type' : 'application/json',

@@ -2,11 +2,14 @@ import { FC, }                                                                fr
 import Dialog                                                                 from '@/components/Dialog'
 import { useAppDispatch, useAppSelector, }                                    from '@/utils'
 import { selectApp, updateActiveConnector, updateIsWaitingForOAuthResponse, } from '@/redux/slices/app'
-import { useAvailableConnector, }                                             from '@/utils/connectors'
+import { useActiveConnector, }                                                from '@/utils/connectors'
 import Image                                                                  from 'next/image'
 import Button                                                                 from '@/components/Button'
 import { ArrowPathIcon, }                                                     from '@heroicons/react/24/solid'
 import { useOAuthState, }                                                     from '@/utils/oauth'
+import Link                                                                   from 'next/link'
+import ConnectorOauthList                                                     from '@/components/ConnectorOauthList'
+import { GoogleLogin, GoogleOAuthProvider, }                                  from '@react-oauth/google'
 
 type Props = {}
 
@@ -16,9 +19,9 @@ const DialogConnectorDetail: FC<Props> = () => {
 
   const { activeConnector, isWaitingForOAuthResponse, } = useAppSelector(selectApp,)
 
-  const { connector, isLoading, } = useAvailableConnector(activeConnector,)
+  const { connector, isLoading, } = useActiveConnector(activeConnector,)
 
-  const { oauthState, mutate, } = useOAuthState(connector?.get('connectorId',) || null,)
+  const { oauthState, mutate, } = useOAuthState(connector?.republic_id || null,)
 
   const dispatch = useAppDispatch()
 
@@ -31,7 +34,7 @@ const DialogConnectorDetail: FC<Props> = () => {
       dispatch(updateIsWaitingForOAuthResponse(true,),)
 
       // Create a record on the instance to track the connection process
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/connectors/${connector?.get('connectorId',)}/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/connectors/${connector?.republic_id}/`, {
         method  : 'POST',
         headers : {
           'Authorization' : `Token ${process.env.NEXT_PUBLIC_API_KEY}`,
@@ -50,7 +53,7 @@ const DialogConnectorDetail: FC<Props> = () => {
         // Start polling the instance server for the access token
         const poll = setInterval(async () => {
 
-          const encodedConnectorId = encodeURIComponent(connector?.get('connectorId',) || '',)
+          const encodedConnectorId = encodeURIComponent(connector?.republic_id || '',)
 
           const url = `${process.env.NEXT_PUBLIC_API_URL}/oauth/?connector_id=${encodedConnectorId}`
 
@@ -90,56 +93,147 @@ const DialogConnectorDetail: FC<Props> = () => {
     // This completes the process
   }
 
+  const handleButtonClick = (action: string,) => {
+    const postAction = async (): Promise<void> => {
+      const encodedConnectorId = encodeURIComponent(connector?.republic_id || '',)
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/connectors/${encodedConnectorId}`
+
+      const res = await fetch(url, {
+        method  : 'POST',
+        headers : {
+          'Authorization' : `Token ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+        body : JSON.stringify({
+          action,
+        },),
+        credentials : 'include',
+      },)
+
+      const json = await res.json()
+
+      console.log(json,)
+    }
+
+    postAction()
+  }
+
   return (
     <Dialog
       show={!!activeConnector}
       onClose={handleClose}
     >
+
       {
         connector && (
           <>
             {
               connector &&
-              !!connector.get('image',) &&
-              connector.get('image',).url() && (
+              !!connector.svg &&
+              connector.svg && (
                 <Image
-                  src={connector.get('image',).url()}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/${connector.svg}`}
                   width={200}
                   height={200}
-                  alt={connector.get('name',)}
-                  className={'max-w-32 object-contain object-center'}
+                  alt={connector.name}
+                  className={'max-w-32 object-contain object-center mb-5'}
                 />
               )
             }
-            <h3>{connector.get('name',)}</h3>
-            <p>{connector.get('description',)}</p>
+            <h3>{connector.name}</h3>
+            <p className={'mb-5'}>{connector.description}</p>
             {
-              oauthState && (
-                <span>Connected</span>
+              connector &&
+              connector.oauths &&
+              connector.oauths.length > 0 && (
+                <ConnectorOauthList oauths={connector.oauths} />
               )
+            }
+            {
+              connector.buttons &&
+              connector.buttons.length > 0 && (
+                !connector.oauths ||
+                connector.oauths.length === 0
+              ) &&
+              connector.republic_id !== 'io.re-public.connector.google' &&
+              connector.buttons.map((button, index,) => {
+                if (button.url) {
+                  return (
+                    <Link
+                      key={index}
+                      href={button.url}
+                      className={'block mb-5 outline-none active:outline-none focus:outline-none'}
+                      target={'_blank'}
+                    >
+                      <Button
+                        className={'flex flex-row justify-center items-center w-32 h-10'}
+                      >
+                        <span>{button.label}</span>
+                      </Button>
+                    </Link>
+                  )
+                }
 
+                if (button.action) {
+                  return (
+                    <Button
+                      className={'flex flex-row justify-center items-center w-32 h-10'}
+                      key={index}
+                      onClick={() => handleButtonClick(button.action as string,)}
+                    >
+                      <span>{button.label}</span>
+                    </Button>
+                  )
+                }
+
+                return null
+
+              },)
             }
             {
-              !oauthState && (
-                <Button
-                  className={'flex flex-row justify-center items-center w-32 h-10'}
-                  onClick={handleConnectClick}
-                >
-                  <>
-                    {
-                      isWaitingForOAuthResponse && (
-                        <ArrowPathIcon className={'fa-spin text-white w-5'} />
-                      )
-                    }
-                    {
-                      !isWaitingForOAuthResponse && (
-                        <span>Connect</span>
-                      )
-                    }
-                  </>
-                </Button>
+              connector && (
+                !connector.oauths ||
+                connector.oauths.length === 0
+              ) &&
+              connector.republic_id === 'io.re-public.connector.google' && (
+                <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID}>
+                  <GoogleLogin
+                    onSuccess={(credentialResponse,) => {
+                      console.log(credentialResponse,)
+                    }}
+                    onError={() => {
+                      console.log('Login Failed',)
+                    }}
+                  />
+                </GoogleOAuthProvider>
               )
             }
+            {/*{*/}
+            {/*  oauthState && (*/}
+            {/*    <span>Connected</span>*/}
+            {/*  )*/}
+
+            {/*}*/}
+            {/*{*/}
+            {/*  !oauthState && (*/}
+            {/*    <Button*/}
+            {/*      className={'flex flex-row justify-center items-center w-32 h-10'}*/}
+            {/*      onClick={handleConnectClick}*/}
+            {/*    >*/}
+            {/*      <>*/}
+            {/*        {*/}
+            {/*          isWaitingForOAuthResponse && (*/}
+            {/*            <ArrowPathIcon className={'fa-spin text-white w-5'} />*/}
+            {/*          )*/}
+            {/*        }*/}
+            {/*        {*/}
+            {/*          !isWaitingForOAuthResponse && (*/}
+            {/*            <span>Connect</span>*/}
+            {/*          )*/}
+            {/*        }*/}
+            {/*      </>*/}
+            {/*    </Button>*/}
+            {/*  )*/}
+            {/*}*/}
 
           </>
 

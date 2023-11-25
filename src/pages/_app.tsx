@@ -4,22 +4,29 @@ import '../styles/global.css'
 // Redux
 import { Provider, } from 'react-redux'
 import store         from '../redux'
-import AppLayout               from '../components/AppLayout'
+import AppLayout     from '../components/AppLayout'
 
-import {CookiesProvider} from 'react-cookie'
+import { CookiesProvider, } from 'react-cookie'
+
+import {
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { queryClient, } from '@/utils'
 
 
-const RepublicOsApp = ( {Component, pageProps} ) => {
+const RepublicOsApp = ( { Component, pageProps, }, ) => {
 
 
   return (
-    <Provider store={store}>
-      <CookiesProvider>
-        <AppLayout>
-          <Component {...pageProps} />
-        </AppLayout>
-      </CookiesProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <CookiesProvider>
+          <AppLayout>
+            <Component {...pageProps} />
+          </AppLayout>
+        </CookiesProvider>
+      </Provider>
+    </QueryClientProvider>
   )
 }
 

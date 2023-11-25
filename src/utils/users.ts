@@ -15,6 +15,8 @@ export const useLoggedInUser = () => {
 
   const fetcherMe = async (): Promise<UserResponse | null> => {
 
+    console.log(process.env.NEXT_PUBLIC_API_URL,)
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/system/me/`, {
       method  : 'GET',
       headers : {
@@ -60,12 +62,14 @@ export const useLoggedInUser = () => {
 export const useIsUnlocked = () => {
 
   const fetcherUnlocked = async (): Promise<boolean> => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/system/unlocked`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/system/unlocked/`, {
       method  : 'GET',
       headers : {
         'Content-Type' : 'application/json',
       },
     },)
+
+    console.log(res,)
 
     if (!res.ok || res.status !== 200) {
       return false

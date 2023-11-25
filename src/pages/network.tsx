@@ -9,6 +9,8 @@ const Network: FC<Props> = () => {
 
   const { nodes, isLoading, } = useZeroTierNodes()
 
+  console.log('nodes', nodes,)
+
   return (
     <PageContainer>
       <h1>Network</h1>

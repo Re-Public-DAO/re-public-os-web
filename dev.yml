@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: ./compose/dev/nextjs/Dockerfile
+    image: republic-os-local-web
+    container_name: republic-os-local-web
+    volumes:
+      - ./src:/app/src
+      - .env.local:/app/.env.local
+    networks:
+      - re_public_os
+
+networks:
+  re_public_os:
+    external: true

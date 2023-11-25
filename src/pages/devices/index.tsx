@@ -16,7 +16,7 @@ const Devices: FC<Props> = () => {
   const dispatch = useAppDispatch()
 
   // TODO: Poll server looking for a Device with a DeviceConnection that
-  // has a matching QR Code Key. If found, refresh the device resulsts so
+  // has a matching QR Code Key. If found, refresh the device results so
   // that the new device is shown in the list.
 
   const handleConnectDeviceClick = () => {

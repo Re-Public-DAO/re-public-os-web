@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
+const { version, } = require('./package.json',)
+
 const nextConfig = {
-  experimental: {
-    appDir: true,
+  publicRuntimeConfig : {
+    version,
+  },
+  experimental : {
+    appDir : true,
   },
   typescript : {
     ignoreBuildErrors : true,
@@ -9,17 +14,13 @@ const nextConfig = {
   eslint : {
     ignoreDuringBuilds : true,
   },
-  images: {
-    remotePatterns: [
+  images : {
+    remotePatterns : [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '8000',
-        pathname: '/media/**',
-      },
-      {
-        protocol: 'https',
-        hostname : process.env.PARSE_FILES_HOSTNAME,
+        protocol : 'http',
+        hostname : 'localhost',
+        port     : '8000',
+        pathname : '/media/**',
       },
     ],
   },
